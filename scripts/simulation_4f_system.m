@@ -10,7 +10,7 @@ x = -N/2:N/2-1;             % x axis span
 y = -N/2:N/2-1;             % y axis span
 [X,Y] = meshgrid(x*del,y*del);  %create x,y meshgrid
 %% Object construction
-A = rgb2gray(imread('C:\Users\asaf1\Desktop\Project QPI TIE\Simulations\1951usaf_test_target.jpg'));    % load iamge
+A = rgb2gray(imread('C:\Users\asaf1\Desktop\Project QPI TIE\Simulations\common\1951usaf_test_target.jpg'));    % load iamge
 figure;
 imagesc(A)                  % show image
 A = A(200:300,40:200);      % select specified rows and columns from imgae
