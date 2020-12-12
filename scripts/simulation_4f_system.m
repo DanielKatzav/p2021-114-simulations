@@ -24,15 +24,15 @@ cropped_img(res,res) = 0;                 % increase image size to 1000x1000
 cropped_img = circshift(cropped_img,[450 450]); % center image elements
 if graphs
     figure;
-    title('USAF Resolution chart as regular object')
     imagesc(cropped_img)                  % show image
+    title('USAF Resolution chart as object')
 end
 phase_div = 2*pi/256;                     % divide 2pi to accomodate grayscale
 phase = exp(1i*double(cropped_img)*phase_div);      % convert A to double and vreate phase object
 if graphs
     figure;
-    title('USAF Resolution chart as phase object')
     imagesc(abs(phase).^2)          % show phase object
+    title('USAF Resolution chart as phase object')
 end
 %%  Phase functions
 f1 = focus(1);                % focus length of first lens
