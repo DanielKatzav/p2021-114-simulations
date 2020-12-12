@@ -1,4 +1,4 @@
-function [propagated] = propagation4f(A,distances,focus,lambda,X,Y)
+function [propagated] = propagation4f(A,distances,focus,lambda,X,Y,graphs)
 % propagation4f will simulate the propagation of an EM wave through a 4f
 % system. Input must include a 1x2 list of travel distances where the first
 % element is the distance from object to first lens, and second element is
@@ -11,10 +11,10 @@ if length(focus) ~= 2 || length(distances) ~= 2
     return
 end
 
-A_before_lens1 = distancePropagate(A,distances(1), lambda, X,Y);          % image after propagation over z_o
-A_after_lens1 = lensPropagate(A_before_lens1,focus(1),lambda,X,Y);        % image after propagation trough lens 1
-A_before_lens2 = distancePropagate(A_after_lens1,sum(focus),lambda,X,Y);  % image after propagating between lenses
-A_after_lens2 = lensPropagate(A_before_lens2,focus(2),lambda,X,Y);        % image after propagating through lens 2
-propagated = distancePropagate(A_after_lens2,distances(2), lambda, X,Y);  % image after propagationg over z_i
+A_before_lens1 = distancePropagate(A,distances(1), lambda, X,Y,graphs);          % image after propagation over z_o
+A_after_lens1 = lensPropagate(A_before_lens1,focus(1),lambda,X,Y,graphs);        % image after propagation trough lens 1
+A_before_lens2 = distancePropagate(A_after_lens1,sum(focus),lambda,X,Y,graphs);  % image after propagating between lenses
+A_after_lens2 = lensPropagate(A_before_lens2,focus(2),lambda,X,Y,graphs);        % image after propagating through lens 2
+propagated = distancePropagate(A_after_lens2,distances(2), lambda, X,Y,graphs);  % image after propagationg over z_i
 
 end

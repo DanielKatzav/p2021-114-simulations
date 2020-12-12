@@ -13,6 +13,7 @@ distances = [100e-3 100e-3];    % distances z_o and z_i
 focus = [100e-3 100e-3];        % focus lengths f1 and f2
 graphs = true;                  % true - draw graphs, false - dont
 SLM_type = 1;                   % to be updated - determine type of mask to put on SLM
+
 %% Simulate 3 focus planes in a 4f system
 [I_before, I_image, I_after] = simulation_4f_system(image,lambda,distances,focus,res,SLM_pixel,delta_z,graphs);
 %results are the intensities of the image before, at and after the focus
