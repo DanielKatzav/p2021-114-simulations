@@ -27,7 +27,8 @@ if graphs
     title('USAF Resolution chart as regular object')
     imagesc(cropped_img)                  % show image
 end
-phase = exp(1i*double(cropped_img));      % convert A to double and vreate phase object
+phase_div = 2*pi/256;                     % divide 2pi to accomodate grayscale
+phase = exp(1i*double(cropped_img)*phase_div);      % convert A to double and vreate phase object
 if graphs
     figure;
     title('USAF Resolution chart as phase object')
