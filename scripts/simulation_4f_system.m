@@ -1,49 +1,61 @@
-clc
-close all
-clear variables
+function [I_before_image_plane,I_image_plane, I_after_image_plane] = simulation_4f_system(image,lambda,distances,focus,res,SLM_pixel,delta_z,graphs)
+%simulation_4f_system will simulate a 4f system with the following
+%parameters:
+%A - matrix of a loaded image in grayscale.
+%lambda - simulated laser wavelength in meters
+%distances - 1x2 array of distances from object to first lens and from
+%focus - 1x2 arrat of focus lengths of lens1 and lens2, respectively.
+%res - image resolution, integer that has to be greater that loaded image
+% resolution. Final resolution will be res x res size.
+%SLM_pixel - SLM pixel resolution in meters
+%delta_z - distance to move the image plane out of focus in meters
+% second lens to image, respectively.
+%graphs - Boolean to determine drawing graphs. True - draw graphs. False -
+% dont.
 
-N = 1000;                   % resolution
-lambda = 0.633e-6;          % wavelength
-SLM_pixel = 8e-6;           % SLM pixel resolution
-del = SLM_pixel;            % SLM pixel resolution - AGAIN!
-delta_z = 10e-3;            % distance to move the image plane out of focus
-x = -N/2:N/2-1;             % x axis span
-y = -N/2:N/2-1;             % y axis span
-[X,Y] = meshgrid(x*del,y*del);  %create x,y meshgrid
+x = -res/2:res/2-1;             % x axis span
+y = -res/2:res/2-1;             % y axis span
+[X,Y] = meshgrid(x*SLM_pixel,y*SLM_pixel);  %create x,y meshgrid
 %% Object construction
-A = rgb2gray(imread('..\common\1951usaf_test_target.jpg'));    % load iamge
-figure;
-title('USAF Resolution chart as regular object')
-imagesc(A)                  % show image
-A = A(200:300,40:200);      % select specified rows and columns from imgae
-A(N,N) = 0;                 % increase image size to 1000x1000
-A = circshift(A,[450 450]); % center image elements
+% A = rgb2gray(imread('..\common\1951usaf_test_target.jpg'));    % load iamge
+if graphs
+    figure;
+    title('USAF Resolution chart as regular object')
+    imagesc(image)                  % show image
+end
+image = image(200:300,40:200);      % select specified rows and columns from imgae
+image(res,res) = 0;                 % increase image size to 1000x1000
+image = circshift(image,[450 450]); % center image elements
 
-P = exp(1i*double(A));      % convert A to double and vreate phase object
-figure;
-title('USAF Resolution chart as phase object')
-imagesc(abs(P))                  % show phase object
+phase = exp(1i*double(image));      % convert A to double and vreate phase object
+if graphs
+    figure;
+    title('USAF Resolution chart as phase object')
+    imagesc(abs(phase))                  % show phase object
+end
 %%  Phase functions
-f1 = 100e-3;                % focus length of first lens
-f2 = 100e-3;                % focus length of second lens
-z_o = 100e-3;               % distance from object plane to first lens
-z_i = 100e-3;               % distance from second lebs to image plane
+f1 = focus(1);                % focus length of first lens
+f2 = focus(2);                % focus length of second lens
+z_o = distances(1);               % distance from object plane to first lens
+z_i = distances(2);               % distance from second lebs to image plane
 %% Complex Field Propagation of P
-P_image_plane = propagation4f(P,[z_o z_i],[f1 f2], lambda, X,Y);
-P_after_image_plane = propagation4f(P,[z_o z_i+delta_z],[f1 f2], lambda, X,Y);
-P_before_image_plane = propagation4f(P,[z_o z_i-delta_z],[f1 f2], lambda, X,Y);
+P_image_plane = propagation4f(phase,[z_o z_i],[f1 f2], lambda, X,Y);
+P_after_image_plane = propagation4f(phase,[z_o z_i+delta_z],[f1 f2], lambda, X,Y);
+P_before_image_plane = propagation4f(phase,[z_o z_i-delta_z],[f1 f2], lambda, X,Y);
 %% Camera        
-I_phase = P_image_plane.*conj(P_image_plane);   % intensity of the image at imaging plane I = u*(u*)
-figure;
-imagesc(I_phase)                                % show intensity of phase object1
-title('Intensity of phase object at image plane')
+I_image_plane = P_image_plane.*conj(P_image_plane);   % intensity of the image at imaging plane I = u*(u*)
+I_after_image_plane = P_after_image_plane.*conj(P_after_image_plane);   % intensity of the image at imaging plane I = u*(u*)
+I_before_image_plane = P_before_image_plane.*conj(P_before_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 
-I_phase_after = P_after_image_plane.*conj(P_after_image_plane);   % intensity of the image at imaging plane I = u*(u*)
-figure;
-imagesc(I_phase_after)                                % show intensity of phase object1
-title('Intensity of phase object after image plane')
-
-I_phase_before = P_before_image_plane.*conj(P_before_image_plane);   % intensity of the image at imaging plane I = u*(u*)
-figure;
-imagesc(I_phase_before)                                % show intensity of phase object1
-title('Intensity of phase object before image plane')
+if graphs
+    figure;
+    imagesc(I_image_plane)                                % show intensity of phase object1
+    title('Intensity of phase object at image plane')
+    figure;
+    imagesc(I_after_image_plane)                                % show intensity of phase object1
+    title('Intensity of phase object after image plane')
+    figure;
+    imagesc(I_before_image_plane)                                % show intensity of phase object1
+    title('Intensity of phase object before image plane')
+end
+end
