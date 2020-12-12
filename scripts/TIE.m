@@ -26,8 +26,8 @@ if graphs
     imagesc(imag_image);
     title("Reconstructed Imaginary of image")
     figure;
-    imagesc(phase.*conj(phase));
-    title("Reconstructed intensity of image")
+    imagesc(rec_image);
+    title("Reconstructed phase")
     
 end
 end

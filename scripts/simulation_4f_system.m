@@ -19,15 +19,15 @@ y = -res/2:res/2-1;             % y axis span
 %% Object construction
 % A = rgb2gray(imread('..\common\1951usaf_test_target.jpg'));    % load iamge
 
-image = image(200:300,40:200);      % select specified rows and columns from imgae
-image(res,res) = 0;                 % increase image size to 1000x1000
-image = circshift(image,[450 450]); % center image elements
+cropped_img = image(200:300,40:200);      % select specified rows and columns from imgae
+cropped_img(res,res) = 0;                 % increase image size to 1000x1000
+cropped_img = circshift(cropped_img,[450 450]); % center image elements
 if graphs
     figure;
     title('USAF Resolution chart as regular object')
-    imagesc(image)                  % show image
+    imagesc(cropped_img)                  % show image
 end
-phase = exp(1i*double(image));      % convert A to double and vreate phase object
+phase = exp(1i*double(cropped_img));      % convert A to double and vreate phase object
 if graphs
     figure;
     title('USAF Resolution chart as phase object')
