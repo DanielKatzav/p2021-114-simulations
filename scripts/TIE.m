@@ -13,8 +13,11 @@ rec_phase = ift2(k_recip * ft2(I));                 % reconstructing phase
 image_data = (angle(rec_phase)+pi)*256/(2*pi);
 
 if graphs
-    figure;
+    figureToSave = figure;
     imagesc(image_data);
-    title("Reconstructed data of image")  
+    colorbar();
+    title("Reconstructed data of image")
+    figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
+    saveas(figureToSave, figFileName)
 end
 end
