@@ -15,6 +15,7 @@ image_data = (angle(rec_phase)+pi)*256/(2*pi);
 if graphs
     figureToSave = figure;
     imagesc(image_data);
+    colorbar();
     title("Reconstructed data of image")
     figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
     saveas(figureToSave, figFileName)

@@ -9,6 +9,7 @@ propagated = ift2(ft2(A).*ft2(prop_d));         % propagation through the distan
 if graphs
    figureToSave = figure;
    imagesc(propagated.*conj(propagated))
+   colorbar();
    title("intensity after distance propagation")
     figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), nameOfPlane, ".jpg");
     saveas(figureToSave, figFileName)
