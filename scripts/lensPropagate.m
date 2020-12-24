@@ -11,7 +11,7 @@ if graphs
    imagesc(propagated.*conj(propagated))
    colorbar();
    title("intensity after lens propagation")
-   figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), nameOfPlane, ".jpg");
+   figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), nameOfPlane, ".jpg"));
    saveas(figureToSave, figFileName)
 end
 end

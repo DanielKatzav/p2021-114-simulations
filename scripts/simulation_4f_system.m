@@ -27,7 +27,7 @@ if graphs
     imagesc(cropped_img)                  % show image
     colorbar();
     title('USAF Resolution chart as object')
-    figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
 end
 phase_div = 2*pi/256;                     % divide 2pi to accomodate grayscale
@@ -37,7 +37,7 @@ if graphs
     imagesc(abs(phase).^2)          % show phase object
     colorbar();
     title('USAF Resolution chart as phase object')
-    figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
     
 end
@@ -60,21 +60,21 @@ if graphs
     imagesc(I_image_plane)                                % show intensity of phase object1
     colorbar();
     title('Intensity of phase object at image plane')
-    figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
     
     figureToSave = figure;
     imagesc(I_after_image_plane)                                % show intensity of phase object1
     colorbar();
     title('Intensity of phase object after image plane')
-    figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
     
     figureToSave = figure;
     imagesc(I_before_image_plane)                                % show intensity of phase object1
     colorbar();
     title('Intensity of phase object before image plane')
-    figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
 
 end

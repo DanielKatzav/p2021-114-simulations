@@ -17,7 +17,7 @@ if graphs
     imagesc(image_data);
     colorbar();
     title("Reconstructed data of image")
-    figFileName = strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg");
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
 end
 end
