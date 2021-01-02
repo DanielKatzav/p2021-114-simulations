@@ -1,4 +1,4 @@
-function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,spat_freqs,graphs)
+function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs)
 %TIE will calculate the phase of an object using the Transport of Intensity
 %equation. It requires 3 images at 3 focal planes, distanced delta_z from
 %one another.
@@ -8,11 +8,11 @@ function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,spat_freqs,graph
 %the graphs parameter will determine whether to draw graphs of not. 
 dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
 I = k_0*dIdz./I_image;                              % Fourier transform argument
-k_recip = 1/(spat_freqs(1)^2 + spat_freqs(2)^2);    % reciprocal of sum of spatial freq's
+k_recip = 1./(k_x.^2 + k_y.^2);                     % reciprocal of sum of spatial freq's
 rec_phase = ift2(k_recip * ft2(I));                 % reconstructing phase
 image_data = (angle(rec_phase)+pi)*256/(2*pi);
 
-if graphs
+if ~graphs
     figureToSave = figure;
     imagesc(image_data);
     colorbar();

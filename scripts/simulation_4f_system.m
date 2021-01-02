@@ -12,16 +12,15 @@ function [I_before_image_plane,I_image_plane, I_after_image_plane] = simulation_
 % second lens to image, respectively.
 %graphs - Boolean to determine drawing graphs. True - draw graphs. False -
 % dont.
-threshold = 240;                % threshold for binary phase usage
-x = -res/2:res/2-1;             % x axis span
-y = -res/2:res/2-1;             % y axis span
-[X,Y] = meshgrid(x*SLM_pixel,y*SLM_pixel);  %create x,y meshgrid
+threshold = 240;                            % threshold for binary phase usage
+x = -res/2:res/2-1;                         % x axis span
+y = -res/2:res/2-1;                         % y axis span
+[X,Y] = meshgrid(x*SLM_pixel,y*SLM_pixel);  % create x,y meshgrid
 %% Object construction
-% A = rgb2gray(imread('..\common\1951usaf_test_target.jpg'));    % load iamge
-cropped_img = image(200:300,40:200);      % select specified rows and columns from imgae
-cropped_img(res,res) = 0;                 % increase image size to 1000x1000
+cropped_img = image(200:300,40:200);                % select specified rows and columns from imgae
+cropped_img(res,res) = 0;                           % increase image size to 1000x1000
 cropped_img = circshift(cropped_img,[450 450]);     % center image elements
-binary_img = uint8((cropped_img >= threshold));    % create binary values depending on threshold
+binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
 if graphs
     figureToSave = figure;

@@ -21,5 +21,5 @@ SLM_type = 1;                   % to be updated - determine type of mask to put 
 
 %% Calculate phase using TIE
 [k_x, k_y] = calc_spatial_freqs(k_0, SLM_type, I_image);
-spat_freqs = [k_x, k_y];
-phase = TIE(I_before,I_image,I_after,delta_z,k_0,spat_freqs,graphs);
+
+phase = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs);
