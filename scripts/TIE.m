@@ -9,8 +9,14 @@ function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs)
 dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
 I = k_0*dIdz./I_image;                              % Fourier transform argument
 k_recip = 1./(k_x.^2 + k_y.^2);                     % reciprocal of sum of spatial freq's
+
 rec_phase = ift2(k_recip * ft2(I));                 % reconstructing phase
-image_data = (angle(rec_phase)+pi)*256/(2*pi);
+image_data = real(rec_phase);
+
+figure;
+imagesc(k_recip)
+colorbar
+title('2D Spatial Frequencies')
 
 if ~graphs
     figureToSave = figure;

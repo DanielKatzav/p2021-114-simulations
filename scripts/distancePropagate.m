@@ -10,7 +10,7 @@ if graphs
    figureToSave = figure;
    imagesc(propagated.*conj(propagated))
    colorbar();
-   title("intensity after distance propagation")
+   title("intensity after distance propagation ")
     figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), nameOfPlane, ".jpg"));
     saveas(figureToSave, figFileName)
 end

@@ -1,4 +1,4 @@
-function [I_before_image_plane,I_image_plane, I_after_image_plane] = simulation_4f_system(image,lambda,distances,focus,res,SLM_pixel,delta_z,graphs)
+function [I_before_image_plane,I_image_plane, I_after_image_plane] = simulation_4f_system(image,lambda,distances,focus,resolution,X, Y,delta_z,graphs)
 %simulation_4f_system will simulate a 4f system with the following
 %parameters:
 %A - matrix of a loaded image in grayscale.
@@ -12,13 +12,11 @@ function [I_before_image_plane,I_image_plane, I_after_image_plane] = simulation_
 % second lens to image, respectively.
 %graphs - Boolean to determine drawing graphs. True - draw graphs. False -
 % dont.
-threshold = 240;                            % threshold for binary phase usage
-x = -res/2:res/2-1;                         % x axis span
-y = -res/2:res/2-1;                         % y axis span
-[X,Y] = meshgrid(x*SLM_pixel,y*SLM_pixel);  % create x,y meshgrid
+threshold = 250;                            % threshold for binary phase usage
+
 %% Object construction
 cropped_img = image(200:300,40:200);                % select specified rows and columns from imgae
-cropped_img(res,res) = 0;                           % increase image size to 1000x1000
+cropped_img(resolution,resolution) = 0;             % increase image size to 1000x1000
 cropped_img = circshift(cropped_img,[450 450]);     % center image elements
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
@@ -32,7 +30,7 @@ if graphs
 end
 
 phase_const = pi/3;                                  % constant to multiply binary img, s.t. exp doesnt zero
-phase = exp(1i*double(binary_img)*phase_const);      % convert A to double and create phase object
+phase = complex(exp(1i*double(binary_img)*phase_const));      % convert A to double and create phase object
 if graphs
     figureToSave = figure;
     imagesc(angle(phase))          % show phase object
@@ -60,21 +58,21 @@ if graphs
     figureToSave = figure;
     imagesc(I_image_plane)                                % show intensity of phase object1
     colorbar();
-    title('Intensity of phase object at image plane')
+    title('Intensity of phase object at image plane ')
     figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
     
     figureToSave = figure;
     imagesc(I_after_image_plane)                                % show intensity of phase object1
     colorbar();
-    title('Intensity of phase object after image plane')
+    title('Intensity of phase object after image plane ')
     figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
     
     figureToSave = figure;
     imagesc(I_before_image_plane)                                % show intensity of phase object1
     colorbar();
-    title('Intensity of phase object before image plane')
+    title('Intensity of phase object before image plane ')
     figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
 
