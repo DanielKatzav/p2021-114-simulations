@@ -11,7 +11,7 @@ SLM_pixel = 8e-6;               % SLM pixel resolution
 delta_z = 10e-3;                % distance to move the image plane out of focus
 distances = [100e-3 100e-3];    % distances z_o and z_i
 focus = [100e-3 100e-3];        % focus lengths f1 and f2
-graphs = true;                  % true - draw graphs, false - dont
+graphs = false;                  % true - draw graphs, false - dont
 SLM_type = 1;                   % to be updated - determine type of mask to put on SLM
 
 %% Simulate 3 focus planes in a 4f system
@@ -20,7 +20,6 @@ SLM_type = 1;                   % to be updated - determine type of mask to put 
 %plane, respectively.
 
 %% Calculate phase using TIE
-[k_x, k_y] = calc_spatial_freqs(k_0, SLM_type);
-% spat_freqs = [k_x k_y];
-spat_freqs = [sqrt(0.5), sqrt(0.5)];
+[k_x, k_y] = calc_spatial_freqs(k_0, SLM_type, I_image);
+spat_freqs = [k_x, k_y];
 phase = TIE(I_before,I_image,I_after,delta_z,k_0,spat_freqs,graphs);
