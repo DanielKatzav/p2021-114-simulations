@@ -12,12 +12,14 @@ function [I_before_image_plane,I_image_plane, I_after_image_plane] = simulation_
 % second lens to image, respectively.
 %graphs - Boolean to determine drawing graphs. True - draw graphs. False -
 % dont.
-threshold = 250;                            % threshold for binary phase usage
+
 
 %% Object construction
-cropped_img = image(200:300,40:200);                % select specified rows and columns from imgae
+threshold = 250;                                    % threshold for binary phase usage
+cropped_img = image(230:270,60:90);                % select specified rows and columns from image
+cropped_img = imresize(cropped_img, 20);
 cropped_img(resolution,resolution) = 0;             % increase image size to 1000x1000
-cropped_img = circshift(cropped_img,[450 450]);     % center image elements
+cropped_img = circshift(cropped_img,[85 205]);     % center image elements
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
 if graphs
