@@ -17,10 +17,10 @@ x = -resolution/2:resolution/2-1;                         % x axis span
 y = -resolution/2:resolution/2-1;                         % y axis span
 [X,Y] = meshgrid(x*SLM_pixel,y*SLM_pixel);  % create x,y meshgrid
 %% Simulate 3 focus planes in a 4f system
-[I_before, I_image, I_after] = simulation_4f_system(image,lambda,distances,focus,resolution,X,Y,delta_z,graphs);
+[I_before, I_image, I_after, lapl] = simulation_4f_system(image,lambda,distances,focus,resolution,X,Y,delta_z,graphs);
 %results are the intensities of the image before, at and after the focus
 %plane, respectively.
 
 %% Calculate phase using TIE
 [k_x, k_y] = calc_spatial_freqs(SLM_type, X,Y);
-phase = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs);
+phase = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs, lapl);

@@ -1,4 +1,4 @@
-function [I_before_image_plane,I_image_plane, I_after_image_plane] = simulation_4f_system(image,lambda,distances,focus,resolution,X, Y,delta_z,graphs)
+function [I_before_image_plane,I_image_plane, I_after_image_plane, lapl] = simulation_4f_system(image,lambda,distances,focus,resolution,X, Y,delta_z,graphs)
 %simulation_4f_system will simulate a 4f system with the following
 %parameters:
 %A - matrix of a loaded image in grayscale.
@@ -42,6 +42,20 @@ if graphs
     saveas(figureToSave, figFileName)
     
 end
+
+%% Get laplacian using del2 to compare with 4f system
+lapl = del2(phase);
+
+if ~graphs
+    figureToSave = figure;
+    imagesc(abs(lapl))          % show laplacian object
+    colorbar();
+    title('Phase object Laplacian using del2')
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
+    saveas(figureToSave, figFileName)
+    
+end
+
 %%  Phase functions
 f1 = focus(1);                % focus length of first lens
 f2 = focus(2);                % focus length of second lens
