@@ -24,25 +24,25 @@ end
 
 % k_recip = 1./(k_x.^2 + k_y.^2);% reciprocal of sum of spatial freq's
 
-% recipcoral sum of spatial freq's using nati's code
+% recipcoral sum of spatial freq's using nati's code:
 
 N = length(I);
 fsqr=repmat((1i*2*pi/(2*N))*(-(N-1)/2:(N-1)/2),N,1).^2+repmat((1i*2*pi/(2*N))*(-(N-1)/2:(N-1)/2)',1,N).^2; 
 k_recip = 1./fsqr; 
 k_recip(~isfinite(k_recip))=0; 
-% k_recip = k_recip*-1;           % testing
 
-if ~graphs                           % graph of spatial frequencies
+
+if graphs                           % graph of spatial frequencies
     figure;
     imagesc(k_recip)
     colorbar
     title('2D Spatial Frequencies')
 end
 
-rec_phase = ift2(k_recip * ft2(I));                 % reconstructing phase
+rec_phase = ift2(k_recip .* ft2(I));                 % reconstructing phase
 image_data = real(rec_phase);                       % get real part of reconstructed phase
 
-rec_phase_comp = ift2(k_recip * ft2(compare));
+rec_phase_comp = ift2(k_recip .* ft2(compare));
 image_data_comp = real(rec_phase_comp);
 
 
