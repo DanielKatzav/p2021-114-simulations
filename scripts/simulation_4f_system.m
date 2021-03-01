@@ -30,7 +30,7 @@ cropped_img(resolution,resolution) = 0;             % increase image size to 100
 cropped_img = circshift(cropped_img,[h_move w_move]);     % center image elements
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
-if ~graphs
+if graphs
     figureToSave = figure;
     imagesc(binary_img)                  % show image
     colorbar();
@@ -85,7 +85,7 @@ I_image_plane = P_image_plane.*conj(P_image_plane);   % intensity of the image a
 I_after_image_plane = P_after_image_plane.*conj(P_after_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 I_before_image_plane = P_before_image_plane.*conj(P_before_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 
-if ~graphs
+if graphs
     figureToSave = figure;
     imagesc(I_image_plane)                                % show intensity of phase object1
     colorbar();

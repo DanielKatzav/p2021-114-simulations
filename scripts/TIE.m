@@ -28,7 +28,9 @@ comp_abs = abs(compare);
 I_norm = I./max(I_abs(:));
 comp_norm = compare./max(comp_abs(:));
 
-del_difference = comp_norm - I_norm;
+% adding artificial threshold to filter laplacian noise
+I_thresh = zeros(size(I)) + (I > 1e10).*I + (I < -1e10).*I;
+I_thresh_norm = zeros(size(I)) + (I_norm > 0.15).*I_norm + (I_norm < -0.15).*I_norm;
 
 if ~graphs
    figure;
@@ -42,6 +44,16 @@ if ~graphs
    colorbar
    
    figure;
+   imagesc(I_thresh) 
+   title('\nabla^2 using approximation - threshold')
+   colorbar
+   
+   figure;
+   imagesc(I_thresh_norm) 
+   title('\nabla^2 using approximation - threshold + normalize')
+   colorbar
+   
+   figure;
    imagesc(compare) 
    title('\nabla^2 using del2')
    colorbar
@@ -50,12 +62,6 @@ if ~graphs
    imagesc(comp_norm) 
    title('\nabla^2 using del2 - Normalized')
    colorbar
-   
-   figure;
-   imagesc(del_difference) 
-   title('Difference between approx. and del2 \nabla^2 (normalized)')
-   colorbar
-
 
 end
 
@@ -82,7 +88,11 @@ image_data = real(rec_phase);                       % get real part of reconstru
 rec_phase_comp = ift2(k_recip .* ft2(compare));
 image_data_comp = real(rec_phase_comp);
 
+rec_phase_from_thresh = ift2(k_recip .* ft2(I_thresh));                 % reconstructing phase with artificial threshold
+image_data_thresh = real(rec_phase_from_thresh);                       % get real part of reconstructed phase
 
+rec_phase_from_thresh_norm = ift2(k_recip .* ft2(I_thresh_norm));                 % reconstructing phase with arti. threshold and norm.
+image_data_thresh_norm = real(rec_phase_from_thresh_norm);                       % get real part of reconstructed phase
 
 if ~graphs                           % graphs of reconstructed image
     figureToSave = figure;
@@ -96,6 +106,20 @@ if ~graphs                           % graphs of reconstructed image
     imagesc(image_data_comp);
     colorbar();
     title("Reconstructed data of image for comparison")
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
+    saveas(figureToSave, figFileName)
+    
+    figureToSave = figure;
+    imagesc(image_data_thresh);
+    colorbar();
+    title("Reconstructed data of image with threshold")
+    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
+    saveas(figureToSave, figFileName)
+    
+    figureToSave = figure;
+    imagesc(image_data_thresh_norm);
+    colorbar();
+    title("Reconstructed data of image with threshold and normalization")
     figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
     
