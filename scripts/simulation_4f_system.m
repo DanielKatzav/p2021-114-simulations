@@ -20,8 +20,8 @@ h_end = 270;                        % height end point for cropping
 w_start = 60;                       % width starting point for cropping
 w_end = 90;                         % width end point for cropping
 resize_factor = 20;                 % resize factor for scaling image
-h_move = (resolution - (h_end - h_start + 1)*resize_factor)/2;  % pixels to shift height for centering
-w_move = (resolution - (w_end - w_start + 1)*resize_factor)/2;  % pixels to shift width for centering
+h_move = fix((resolution - (h_end - h_start + 1)*resize_factor)/2);  % pixels to shift height for centering
+w_move = fix((resolution - (w_end - w_start + 1)*resize_factor)/2);  % pixels to shift width for centering
 
 threshold = 250;                                    % threshold for binary phase usage
 cropped_img = image(h_start:h_end,w_start:w_end);   % select specified rows and columns from image
@@ -40,17 +40,17 @@ if ~graphs
 end
 
 phase_const = pi/3;                                  % constant to multiply binary img, s.t. exp doesnt zero
-phase = complex(exp(1i*double(binary_img)*phase_const));      % convert A to double and create phase object
+phase_obj = complex(exp(1i*double(binary_img)*phase_const));      % convert A to double and create phase object
 if graphs
     figureToSave = figure;
-    imagesc(angle(phase))          % show phase object
+    imagesc(angle(phase_obj))          % show phase object
     colorbar();
     title('Phase of USAF Resolution chart as phase object')
     figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
     saveas(figureToSave, figFileName)
     
     figureToSave = figure;
-    imagesc(abs(phase))          % show phase object
+    imagesc(abs(phase_obj))          % show phase object
     colorbar();
     title('Amplitude of USAF Resolution chart as phase object')
     figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
@@ -77,9 +77,9 @@ f2 = focus(2);                % focus length of second lens
 z_o = distances(1);               % distance from object plane to first lens
 z_i = distances(2);               % distance from second lebs to image plane
 %% Complex Field Propagation of P
-P_image_plane = propagation4f(phase,[z_o z_i],[f1 f2], lambda, X,Y,graphs,"at image plane");
-P_after_image_plane = propagation4f(phase,[z_o z_i+delta_z],[f1 f2], lambda, X,Y,graphs, "after image plane");
-P_before_image_plane = propagation4f(phase,[z_o z_i-delta_z],[f1 f2], lambda, X,Y,graphs, "before image plane ");
+P_image_plane = propagation4f(phase_obj,[z_o z_i],[f1 f2], lambda, X,Y,graphs,"at image plane");
+P_after_image_plane = propagation4f(phase_obj,[z_o z_i+delta_z],[f1 f2], lambda, X,Y,graphs, "after image plane");
+P_before_image_plane = propagation4f(phase_obj,[z_o z_i-delta_z],[f1 f2], lambda, X,Y,graphs, "before image plane ");
 %% Camera        
 I_image_plane = P_image_plane.*conj(P_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 I_after_image_plane = P_after_image_plane.*conj(P_after_image_plane);   % intensity of the image at imaging plane I = u*(u*)
