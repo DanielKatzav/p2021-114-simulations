@@ -15,14 +15,22 @@ function [I_before_image_plane,I_image_plane, I_after_image_plane, lapl] = simul
 
 
 %% Object construction
+h_start = 230;                      % height starting point for cropping
+h_end = 270;                        % height end point for cropping
+w_start = 60;                       % width starting point for cropping
+w_end = 90;                         % width end point for cropping
+resize_factor = 20;                 % resize factor for scaling image
+h_move = (resolution - (h_end - h_start + 1)*resize_factor)/2;  % pixels to shift height for centering
+w_move = (resolution - (w_end - w_start + 1)*resize_factor)/2;  % pixels to shift width for centering
+
 threshold = 250;                                    % threshold for binary phase usage
-cropped_img = image(230:270,60:90);                % select specified rows and columns from image
-cropped_img = imresize(cropped_img, 20);
+cropped_img = image(h_start:h_end,w_start:w_end);   % select specified rows and columns from image
+cropped_img = imresize(cropped_img, resize_factor);
 cropped_img(resolution,resolution) = 0;             % increase image size to 1000x1000
-cropped_img = circshift(cropped_img,[85 205]);     % center image elements
+cropped_img = circshift(cropped_img,[h_move w_move]);     % center image elements
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
-if graphs
+if ~graphs
     figureToSave = figure;
     imagesc(binary_img)                  % show image
     colorbar();
@@ -77,7 +85,7 @@ I_image_plane = P_image_plane.*conj(P_image_plane);   % intensity of the image a
 I_after_image_plane = P_after_image_plane.*conj(P_after_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 I_before_image_plane = P_before_image_plane.*conj(P_before_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 
-if graphs
+if ~graphs
     figureToSave = figure;
     imagesc(I_image_plane)                                % show intensity of phase object1
     colorbar();
