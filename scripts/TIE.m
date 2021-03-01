@@ -7,19 +7,56 @@ function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs,
 %respectively.
 %compare is the data of the laplacian received using the del2 function
 %the graphs parameter will determine whether to draw graphs of not. 
-dIdz = (I_after - I_before)./(delta_z);           % approximate the derivative with respect to z axis
-I = k_0*dIdz./I_image;                              % Laplacian
+dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
+I = -k_0*dIdz./I_image;                              % Laplacian
 % set Dirichlet conditions on Laplacian, zeroing the edges
-I(1:end,1) = 0;
-I(1:end,end) = 0;
-I(1,1:end) = 0;
-I(end,1:end) = 0; 
+I(1:end,1:100) = 0;
+I(1:end,end-100:end) = 0;
+I(1:100,1:end) = 0;
+I(end-100:end,1:end) = 0; 
+% expanded Dirichlet condition from only image edges to 100 first
+% rows/columns. didnt help so much
 
-if graphs
+% for some reason we get an image mirrored on the 45 deg axis. these bits
+% of code are used to correct this when necessary
+I = flip(I);
+I = flip(I,2);
+
+% normalize both results to better compare them
+I_abs = abs(I);
+comp_abs = abs(compare);
+I_norm = I./max(I_abs(:));
+comp_norm = compare./max(comp_abs(:));
+
+del_difference = comp_norm - I_norm;
+
+if ~graphs
    figure;
    imagesc(I) 
    title('\nabla^2 using approximation')
    colorbar
+   
+   figure;
+   imagesc(I_norm) 
+   title('\nabla^2 using approximation - Normalized')
+   colorbar
+   
+   figure;
+   imagesc(compare) 
+   title('\nabla^2 using del2')
+   colorbar
+   
+   figure;
+   imagesc(comp_norm) 
+   title('\nabla^2 using del2 - Normalized')
+   colorbar
+   
+   figure;
+   imagesc(del_difference) 
+   title('Difference between approx. and del2 \nabla^2 (normalized)')
+   colorbar
+
+
 end
 
 % k_recip = 1./(k_x.^2 + k_y.^2);% reciprocal of sum of spatial freq's
