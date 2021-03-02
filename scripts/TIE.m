@@ -8,12 +8,14 @@ function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs,
 %compare is the data of the laplacian received using the del2 function
 %the graphs parameter will determine whether to draw graphs of not. 
 dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
+I_avg = mean(mean(I_image));                        % avarage value of intensity at image plane
 I = -k_0*dIdz./I_image;                              % Laplacian
 % set Dirichlet conditions on Laplacian, zeroing the edges
-I(1:end,1:100) = 0;
-I(1:end,end-100:end) = 0;
-I(1:100,1:end) = 0;
-I(end-100:end,1:end) = 0; 
+dirich_border = 1;
+I(1:end,1:dirich_border) = 0;
+I(1:end,end-dirich_border:end) = 0;
+I(1:dirich_border,1:end) = 0;
+I(end-dirich_border:end,1:end) = 0; 
 % expanded Dirichlet condition from only image edges to 100 first
 % rows/columns. didnt help so much
 
@@ -29,13 +31,36 @@ I_norm = I./max(I_abs(:));
 comp_norm = compare./max(comp_abs(:));
 
 % adding artificial threshold to filter laplacian noise
-I_thresh = zeros(size(I)) + (I > 1e10).*I + (I < -1e10).*I;
-I_thresh_norm = zeros(size(I)) + (I_norm > 0.15).*I_norm + (I_norm < -0.15).*I_norm;
+laplace_filter_upper = 1.35e10;
+laplace_filter_lower = 1.43e10;
+I_thresh = zeros(size(I)) + (I > laplace_filter_upper).*I + (I < -laplace_filter_lower).*I;
+I_thresh_norm = zeros(size(I)) + (I_norm > 0.3).*I_norm + (I_norm < -0.3).*I_norm;
 
 if ~graphs
    figure;
    imagesc(I) 
    title('\nabla^2 using approximation')
+   colorbar
+   
+   
+   figure;
+   imagesc(I_thresh) 
+   title('\nabla^2 using approximation - threshold')
+   colorbar
+   
+
+   figure;
+   imagesc(compare) 
+   title('\nabla^2 using del2')
+   colorbar
+
+end
+
+if graphs
+       
+   figure;
+   imagesc(comp_norm) 
+   title('\nabla^2 using del2 - Normalized')
    colorbar
    
    figure;
@@ -44,23 +69,8 @@ if ~graphs
    colorbar
    
    figure;
-   imagesc(I_thresh) 
-   title('\nabla^2 using approximation - threshold')
-   colorbar
-   
-   figure;
    imagesc(I_thresh_norm) 
    title('\nabla^2 using approximation - threshold + normalize')
-   colorbar
-   
-   figure;
-   imagesc(compare) 
-   title('\nabla^2 using del2')
-   colorbar
-   
-   figure;
-   imagesc(comp_norm) 
-   title('\nabla^2 using del2 - Normalized')
    colorbar
 
 end
