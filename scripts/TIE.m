@@ -53,6 +53,7 @@ neg_avg = mean(neg_avg_mat(neg_nozeros));
 I_thresh(pos_nozeros) = pos_avg;
 I_thresh(neg_nozeros) = neg_avg;
 
+
 if ~graphs
    
    figure;
@@ -123,7 +124,32 @@ image_data_thresh = real(rec_phase_from_thresh);                       % get rea
 rec_phase_from_thresh_norm = ift2(k_recip .* ft2(I_thresh_norm));                 % reconstructing phase with arti. threshold and norm.
 image_data_thresh_norm = real(rec_phase_from_thresh_norm);                       % get real part of reconstructed phase
 
+% analyze reconstructed phase
+I_hist = image_data_thresh(467:537, 466:534);
+I_bin_idx_above = I_hist >= 1.77e12;
+I_bin_idx_below = I_hist < 1.77e12;
+I_bin = I_hist.*I_bin_idx_above;
+I_bin_not = I_hist.*I_bin_idx_below;
+
+bin_mean = mean(mean(I_bin));
+bin_mean_not = mean(mean(I_bin_not));
+
 if ~graphs                           % graphs of reconstructed image
+    
+    figure;
+    hist(I_hist)
+    title('histogram')
+
+    figure;
+    imagesc(I_bin)
+    colorbar
+    title('binary')
+    
+    figure;
+    imagesc(I_bin_not)
+    colorbar
+    title('binary not')
+    
     figureToSave = figure;
     imagesc(image_data);
     colorbar();
