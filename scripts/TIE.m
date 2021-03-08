@@ -36,7 +36,25 @@ laplace_filter_lower = 1.43e10;
 I_thresh = zeros(size(I)) + (I > laplace_filter_upper).*I + (I < -laplace_filter_lower).*I;
 I_thresh_norm = zeros(size(I)) + (I_norm > 0.3).*I_norm + (I_norm < -0.3).*I_norm;
 
+% adding avaraging to filtered image
+avg_filter_pos_upper = 3.14e10;
+avg_filter_pos_lower = 1.372e10;
+avg_filter_neg_upper = -1.46e10;
+avg_filter_neg_lower = -3.071e10;
+
+pos_avg_mat = (I_thresh > avg_filter_pos_lower).*(I_thresh < avg_filter_pos_upper).*I_thresh;
+neg_avg_mat = (I_thresh > avg_filter_neg_lower).*(I_thresh < avg_filter_neg_upper).*I_thresh;
+pos_nozeros = pos_avg_mat ~= 0;
+neg_nozeros = neg_avg_mat ~= 0;
+
+pos_avg = mean(pos_avg_mat(pos_nozeros));
+neg_avg = mean(neg_avg_mat(neg_nozeros));
+
+I_thresh(pos_nozeros) = pos_avg;
+I_thresh(neg_nozeros) = neg_avg;
+
 if ~graphs
+   
    figure;
    imagesc(I) 
    title('\nabla^2 using approximation')
@@ -83,6 +101,7 @@ N = length(I);
 fsqr=repmat((1i*2*pi/(2*N))*(-(N-1)/2:(N-1)/2),N,1).^2+repmat((1i*2*pi/(2*N))*(-(N-1)/2:(N-1)/2)',1,N).^2; 
 k_recip = 1./fsqr; 
 k_recip(~isfinite(k_recip))=0; 
+
 
 
 if graphs                           % graph of spatial frequencies

@@ -30,7 +30,7 @@ cropped_img(resolution,resolution) = 0;             % increase image size to 100
 cropped_img = circshift(cropped_img,[h_move w_move]);     % center image elements
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
-if ~graphs
+if graphs
     figureToSave = figure;
     imagesc(binary_img)                  % show image
     colorbar();
