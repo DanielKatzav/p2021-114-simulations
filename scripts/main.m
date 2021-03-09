@@ -4,6 +4,7 @@ clear variables
 
 %% Load image and set parameters
 image = rgb2gray(imread('..\common\1951usaf_test_target.jpg'));    % load iamge
+% image = 255 - image;            % invert colors (use on new USAF-1951.pgn)
 lambda = 0.633e-6;              % wavelength
 k_0 = 2*pi/lambda;              % wave number
 resolution = 1000;              % resolution

@@ -15,10 +15,10 @@ function [I_before_image_plane,I_image_plane, I_after_image_plane, lapl] = simul
 
 
 %% Object construction
-h_start = 205;                      % height starting point for cropping
-h_end = 285;                        % height end point for cropping
+h_start = 200;                      % height starting point for cropping
+h_end = 290;                        % height end point for cropping
 w_start = 110;                       % width starting point for cropping
-w_end = 185;                         % width end point for cropping
+w_end = 190;                         % width end point for cropping
 resize_factor = 1;                 % resize factor for scaling image
 h_move = fix((resolution - (h_end - h_start + 1)*resize_factor)/2);  % pixels to shift height for centering
 w_move = fix((resolution - (w_end - w_start + 1)*resize_factor)/2);  % pixels to shift width for centering
@@ -30,7 +30,7 @@ cropped_img(resolution,resolution) = 0;             % increase image size to 100
 cropped_img = circshift(cropped_img,[h_move w_move]);     % center image elements
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
-if graphs
+if ~graphs
     figureToSave = figure;
     imagesc(binary_img)                  % show image
     colorbar();
@@ -41,7 +41,7 @@ end
 
 phase_const = pi/3;                                  % constant to multiply binary img, s.t. exp doesnt zero
 phase_obj = complex(exp(1i*double(binary_img)*phase_const));      % convert A to double and create phase object
-if graphs
+if ~graphs
     figureToSave = figure;
     imagesc(angle(phase_obj))          % show phase object
     colorbar();
