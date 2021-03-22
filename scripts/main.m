@@ -9,7 +9,7 @@ lambda = 0.633e-6;              % wavelength
 k_0 = 2*pi/lambda;              % wave number
 resolution = 1000;              % resolution
 SLM_pixel = 8e-6;               % SLM pixel resolution
-delta_z = 10e-9;                 % distance to move the image plane out of focus
+delta_z = 500e-6;                 % distance to move the image plane out of focus
 focus_dist = 100e-3;
 distances = [focus_dist focus_dist];    % distances z_o and z_i
 focus = [focus_dist focus_dist];        % focus lengths f1 and f2
@@ -25,4 +25,4 @@ y = -resolution/2:resolution/2-1;                         % y axis span
 
 %% Calculate phase using TIE
 [k_x, k_y] = calc_spatial_freqs(SLM_type, X,Y);
-phase = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs, lapl);
+phase = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs, lapl, SLM_pixel);

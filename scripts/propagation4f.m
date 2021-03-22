@@ -13,7 +13,8 @@ end
 
 A_before_lens1 = distancePropagate(A,distances(1), lambda, X,Y,graphs, strcat(nameOfPlane, "before first lens"));          % image after propagation over z_o
 A_after_lens1 = lensPropagate(A_before_lens1,focus(1),lambda,X,Y,graphs, strcat(nameOfPlane, "after first lens"));        % image after propagation trough lens 1
-A_before_lens2 = distancePropagate(A_after_lens1,sum(focus),lambda,X,Y,graphs, strcat(nameOfPlane, "before second lens"));  % image after propagating between lenses
+A_before_fourier = distancePropagate(A_after_lens1,focus(1),lambda,X,Y,graphs,strcat(nameOfPlane, "at fourier plane"));
+A_before_lens2 = distancePropagate(A_before_fourier,focus(2),lambda,X,Y,graphs, strcat(nameOfPlane, "before second lens"));  % image after propagating between lenses
 A_after_lens2 = lensPropagate(A_before_lens2,focus(2),lambda,X,Y,graphs, strcat(nameOfPlane, "after second lens"));        % image after propagating through lens 2
 propagated = distancePropagate(A_after_lens2,distances(2), lambda, X,Y,graphs, strcat(nameOfPlane, "propagated"));  % image after propagationg over z_i
 
