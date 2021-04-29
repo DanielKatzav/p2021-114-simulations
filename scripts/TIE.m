@@ -1,4 +1,4 @@
-function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs, compare, SLM_pixel)
+function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,graphs, compare, SLM_pixel, SLM_type)
 %TIE will calculate the phase of an object using the Transport of Intensity
 %equation. It requires 3 images at 3 focal planes, distanced delta_z from
 %one another.
@@ -7,11 +7,19 @@ function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,k_x, k_y,graphs,
 %respectively.
 %compare is the data of the laplacian received using the del2 function
 %the graphs parameter will determine whether to draw graphs of not. 
-I_after = I_after(100:900,100:900);
-I_before = I_before(100:900,100:900);
-dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
-I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
-I = -k_0*dIdz./I_avg;                              % Laplacian
+if SLM_type == 1
+    I_after = I_after(100:900,100:900);
+    I_before = I_before(100:900,100:900);
+    dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
+    I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
+    I = -k_0*dIdz./I_avg;                              % Laplacian
+else
+    I_after = I_after(100:900,100:900);
+    I_before = I_before(100:900,100:900);
+    dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
+    I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
+    I = -k_0*dIdz./I_avg;                              % Laplacian
+end
 % set Dirichlet conditions on Laplacian, zeroing the edges
 % dirich_border = 1;
 % I(1:end,1:dirich_border) = 0;
@@ -56,7 +64,7 @@ I_thresh(pos_nozeros) = pos_avg;
 I_thresh(neg_nozeros) = neg_avg;
 
 
-if ~graphs
+if graphs
    
    figure;
    imagesc(I) 
