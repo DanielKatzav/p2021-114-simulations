@@ -14,11 +14,26 @@ if SLM_type == 1
     I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
     I = -k_0*dIdz./I_avg;                              % Laplacian
 else
-    I_after = I_after(100:900,100:900);
-    I_before = I_before(100:900,100:900);
-    dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
+    resolution = length(I_image);
+    margin = 100;
+    I_left = I_image(479 - margin:541 + margin, 394 - margin:444 + margin);                        % left part of image
+    I_right = I_image(479 - margin:541 + margin, 569 - margin:619 + margin);                  %right part of image
+    figure;
+    imagesc(I_left)
+    title('left')
+    figure;
+    imagesc(I_right);
+    title('right')
+    dIdz = (I_left - I_right)./(2*delta_z);                     % approximate the derivative with respect to z axis         
     I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
     I = -k_0*dIdz./I_avg;                              % Laplacian
+    I(resolution,resolution) = 0;
+    h_move = fix((resolution - (size(dIdz,1) + 1))/2);  % pixels to shift height for centering
+    w_move = fix((resolution - (size(dIdz,2) + 1))/2);  % pixels to shift width for centering
+    I = circshift(I,[h_move w_move]);     % center image elements
+    figure;
+    imagesc(I)
+    title('dIdz with SLM')
 end
 % set Dirichlet conditions on Laplacian, zeroing the edges
 % dirich_border = 1;
@@ -108,7 +123,7 @@ end
 
 % recipcoral sum of spatial freq's using nati's code:
 
-N = length(I_after);
+N = length(I_image);
 fsqr=repmat((1i*2*pi/(N*SLM_pixel))*(-(N-1)/2:(N-1)/2),N,1).^2+repmat((1i*2*pi/(N*SLM_pixel))*(-(N-1)/2:(N-1)/2)',1,N).^2; 
 k_recip = 1./fsqr; 
 k_recip(~isfinite(k_recip))=0; 
