@@ -6,9 +6,9 @@ pattern = [1 -1; -1 1];
 x_shift = 100;
 y_shift = 0;
 checkers = repmat(pattern, N/2, N/2); 
-% Qlens = exp(-1i*(pi/(lambda*f))*(X.^2+Y.^2)).^checkers;   % propagation transfer function of lens with focus f
+Qlens = exp(-1i*(pi/(lambda*f))*(X.^2+Y.^2)).^checkers;   % propagation transfer function of lens with focus f
 Qshift = exp(1i*(pi/lambda)*(X*x_shift + Y*y_shift)).^checkers; % transfer function of linear phase shift
-Qlens = 1;
+% Qlens = 1;
 if SLM_type == 1
     propagated = A;
 else

@@ -76,11 +76,13 @@ f1 = focus(1);                % focus length of first lens
 f2 = focus(2);                % focus length of second lens
 z_o = distances(1);               % distance from object plane to first lens
 z_i = distances(2);               % distance from second lebs to image plane
+
+f_SLM = focus(2)^2/delta_z;
 %% Complex Field Propagation of P
 
-P_image_plane = propagation4f(phase_obj,[z_o z_i],[f1 f2], lambda, X,Y,graphs,"at image plane", SLM_type);
-P_after_image_plane = propagation4f(phase_obj,[z_o z_i+delta_z],[f1 f2], lambda, X,Y,graphs, "after image plane", SLM_type);
-P_before_image_plane = propagation4f(phase_obj,[z_o z_i-delta_z],[f1 f2], lambda, X,Y,graphs, "before image plane ", SLM_type);
+P_image_plane = propagation4f(phase_obj,[z_o z_i],[f1 f2],f_SLM, lambda, X,Y,graphs,"at image plane", SLM_type);
+P_after_image_plane = propagation4f(phase_obj,[z_o z_i+delta_z],[f1 f2],f_SLM, lambda, X,Y,graphs, "after image plane", SLM_type);
+P_before_image_plane = propagation4f(phase_obj,[z_o z_i-delta_z],[f1 f2],f_SLM, lambda, X,Y,graphs, "before image plane ", SLM_type);
     
 %% Camera        
 I_image_plane = P_image_plane.*conj(P_image_plane);   % intensity of the image at imaging plane I = u*(u*)
