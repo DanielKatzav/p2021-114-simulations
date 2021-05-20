@@ -20,14 +20,14 @@ h_end = 860;                        % height end point for cropping
 w_start = 30;                       % width starting point for cropping
 w_end = 100;                         % width end point for cropping
 resize_factor = 1;                 % resize factor for scaling image
-h_move = fix((resolution - (h_end - h_start + 1)*resize_factor)/2);  % pixels to shift height for centering
-w_move = fix((resolution - (w_end - w_start + 1)*resize_factor)/2);  % pixels to shift width for centering
+
 
 threshold = 240;                                    % threshold for binary phase usage
 cropped_img = image(h_start:h_end,w_start:w_end);   % select specified rows and columns from image
 cropped_img = imresize(cropped_img, resize_factor);
+cropped_img_size = size(cropped_img);
 cropped_img(resolution,resolution) = 0;             % increase image size to 1000x1000
-cropped_img = circshift(cropped_img,[h_move w_move]);     % center image elements
+cropped_img = centerImage(cropped_img, cropped_img_size);
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
 if graphs
@@ -41,6 +41,14 @@ end
 
 phase_const = pi/3;                                  % constant to multiply binary img, s.t. exp doesnt zero
 phase_obj = complex(exp(1i*double(binary_img)*phase_const));      % convert A to double and create phase object
+
+mask = ones(126,113);                               % create a mask to remove noise in TIE
+mask_size = size(mask);
+mask(resolution,resolution) = 0;
+mask = centerImage(mask, mask_size);
+
+phase_obj = phase_obj.*mask;                        % mask phase object to clear shift noise
+
 if graphs
     figureToSave = figure;
     imagesc(angle(phase_obj))          % show phase object
