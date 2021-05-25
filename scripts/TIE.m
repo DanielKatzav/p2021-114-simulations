@@ -19,40 +19,23 @@ else
     margin = 80;
     I_left = I_image(479 - margin:541 + margin, 394 - margin:444 + margin);                        % left part of image
     I_right = I_image(479 - margin:541 + margin, 569 - margin:619 + margin);                  %right part of image
-    figure;
-    imagesc(I_left)
-    title('left')
-    figure;
-    imagesc(I_right);
-    title('right')
+    
+    saveFigure(I_left,'Left Shifted Image at Image Plane','',graphs);
+    saveFigure(I_right,'Right Shifted Image at Image Plane','',graphs);
+
     dIdz = (I_left - I_right)./(2*delta_z);                     % approximate the derivative with respect to z axis         
     I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
     I = -k_0*dIdz./I_avg;                              % Laplacian
     I(resolution,resolution) = 0;
     I = centerImage(I,size(dIdz));
-    figure;
-    imagesc(I)
-    title('dIdz with SLM')
 end
 
 I = flip(I);
 I = flip(I,2);
 
-
-if graphs
    
-   figure;
-   imagesc(I) 
-   title('\nabla^2 using approximation')
-   colorbar
-
-   figure;
-   imagesc(compare) 
-   title('\nabla^2 using del2')
-   colorbar
-
-end
-
+saveFigure(I,'\nabla^2 Using TIE Method','',graphs);
+saveFigure(compare,'\nabla^2 Using del2() Function','',graphs);
 
 % recipcoral sum of spatial freq's using nati's code:
 
@@ -61,33 +44,22 @@ fsqr=repmat((1i*2*pi/(N*SLM_pixel))*(-(N-1)/2:(N-1)/2),N,1).^2+repmat((1i*2*pi/(
 k_recip = 1./fsqr; 
 k_recip(~isfinite(k_recip))=0; 
 
-
-
-if graphs                           % graph of spatial frequencies
-    figure;
-    imagesc(k_recip)
-    colorbar
-    title('2D Spatial Frequencies')
-end
+saveFigure(k_recip,'2D Spatial Frequencies','',graphs);        % graph of spatial frequencies
 
 rec_phase = ift2(k_recip .* ft2(I));                 % reconstructing phase
 image_data = real(rec_phase);                       % get real part of reconstructed phase
 
+slice = image_data(400:600, 500);           % intersection slice of the reconstructed data
 
-slice = image_data(400:600, 500);
 
+saveFigure(slice,'Slice of Middle of Reconstruction','',graphs);
 
-if ~graphs                           % graphs of reconstructed image
-    
-    figure;
-    plot(slice)
-    title('Slice of Middle of Reconstruction')
-    figureToSave = figure;
-    imagesc(image_data);
-    colorbar();
-    title("Reconstructed data of image")
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-    saveas(figureToSave, figFileName)
-  
-end
+figureToSave = figure;
+histogram(image_data(440:560,440:560));     % histogram of the reconstructed data
+title('Histogram of reconstructed Data')
+figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
+saveas(figureToSave, figFileName)
+
+saveFigure(image_data,'Reconstructed data of image','',graphs);
+
 end

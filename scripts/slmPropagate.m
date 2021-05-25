@@ -10,16 +10,10 @@ Qlens = exp(-1i*(pi/(lambda*f))*(X.^2+Y.^2)).^checkers;   % propagation transfer
 Qshift = exp(1i*(pi/lambda)*(X*x_shift + Y*y_shift)).^checkers; % transfer function of linear phase shift
 if SLM_type == 1
     propagated = A;
+    graphs = false;     % disable graphs printing while using standard TIE
 else
     propagated = A.*Qlens.*Qshift;
 end
 
-if graphs
-   figureToSave = figure;
-   imagesc(propagated.*conj(propagated))
-   colorbar();
-   title("intensity after SLM trnasfer ")
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), nameOfPlane, ".jpg"));
-    saveas(figureToSave, figFileName)
-end
+saveFigure(propagated.*conj(propagated),'Intensity After SLM Transfer ',nameOfPlane,graphs);
 end

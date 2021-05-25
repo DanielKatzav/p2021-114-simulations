@@ -6,13 +6,5 @@ function [propagated] = distancePropagate(A,d,lambda,X,Y,graphs, nameOfPlane)
 
 prop_d = exp(1i*(pi/(lambda*d))*(X.^2+Y.^2));   % propagation transfer function over d
 propagated = ift2(ft2(A).*ft2(prop_d));         % propagation through the distance
-if graphs
-   figureToSave = figure;
-   imagesc(propagated.*conj(propagated))
-   colorbar();
-   title("intensity after distance propagation ")
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), nameOfPlane, ".jpg"));
-    saveas(figureToSave, figFileName)
-end
-
+saveFigure(propagated.*conj(propagated),'Intensity After Distance Propagation ',nameOfPlane,graphs);
 end

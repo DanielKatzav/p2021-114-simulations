@@ -30,14 +30,7 @@ cropped_img(resolution,resolution) = 0;             % increase image size to 100
 cropped_img = centerImage(cropped_img, cropped_img_size);
 binary_img = uint8((cropped_img >= threshold));     % create binary values depending on threshold
 
-if graphs
-    figureToSave = figure;
-    imagesc(binary_img)                  % show image
-    colorbar();
-    title('USAF Resolution chart as object')
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-    saveas(figureToSave, figFileName)
-end
+saveFigure(binary_img,'USAF Resolution chart as object','',graphs);
 
 phase_const = pi/3;                                  % constant to multiply binary img, s.t. exp doesnt zero
 phase_obj = complex(exp(1i*double(binary_img)*phase_const));      % convert A to double and create phase object
@@ -49,35 +42,14 @@ mask = centerImage(mask, mask_size);
 
 phase_obj = phase_obj.*mask;                        % mask phase object to clear shift noise
 
-if graphs
-    figureToSave = figure;
-    imagesc(angle(phase_obj))          % show phase object
-    colorbar();
-    title('Phase of USAF Resolution chart as phase object')
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-    saveas(figureToSave, figFileName)
-    
-    figureToSave = figure;
-    imagesc(abs(phase_obj))          % show phase object
-    colorbar();
-    title('Amplitude of USAF Resolution chart as phase object')
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-    saveas(figureToSave, figFileName)
-    
-end
+saveFigure(angle(phase_obj),'Phase of USAF Resolution chart as phase object','',graphs);
+saveFigure(abs(phase_obj),'Amplitude of USAF Resolution chart as phase object','',graphs);
+
 
 %% Get laplacian using del2 to compare with 4f system
 lapl = del2(double(binary_img)*phase_const);
+saveFigure(abs(lapl),'Phase object Laplacian using del2() function','',graphs);
 
-if graphs
-    figureToSave = figure;
-    imagesc(abs(lapl))          % show laplacian object
-    colorbar();
-    title('Phase object Laplacian using del2')
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-    saveas(figureToSave, figFileName)
-    
-end
 
 %%  Phase functions
 f1 = focus(1);                % focus length of first lens
@@ -88,38 +60,21 @@ z_i = distances(2);               % distance from second lebs to image plane
 f_SLM = focus(2)^2/delta_z;
 %% Complex Field Propagation of P
 
-P_image_plane = propagation4f(phase_obj,[z_o z_i],[f1 f2],f_SLM, lambda, X,Y,graphs,"at image plane", SLM_type);
-P_after_image_plane = propagation4f(phase_obj,[z_o z_i+delta_z],[f1 f2],f_SLM, lambda, X,Y,graphs, "after image plane", SLM_type);
-P_before_image_plane = propagation4f(phase_obj,[z_o z_i-delta_z],[f1 f2],f_SLM, lambda, X,Y,graphs, "before image plane ", SLM_type);
-    
+P_image_plane = propagation4f(phase_obj,[z_o z_i],[f1 f2],f_SLM, lambda, X,Y,graphs,"at Image Plane", SLM_type);
+if SLM_type == 2
+    graphs = false;         %disable graph printing of defocused planes while muxing
+end
+P_after_image_plane = propagation4f(phase_obj,[z_o z_i+delta_z],[f1 f2],f_SLM, lambda, X,Y,graphs, "After Image Plane", SLM_type);
+P_before_image_plane = propagation4f(phase_obj,[z_o z_i-delta_z],[f1 f2],f_SLM, lambda, X,Y,graphs, "Before Image Plane ", SLM_type);
+graphs = true;
 %% Camera        
 I_image_plane = P_image_plane.*conj(P_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 I_after_image_plane = P_after_image_plane.*conj(P_after_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 I_before_image_plane = P_before_image_plane.*conj(P_before_image_plane);   % intensity of the image at imaging plane I = u*(u*)
 
-if ~graphs
-    figureToSave = figure;
-    imagesc(I_image_plane)                                % show intensity of phase object1
-    colorbar();
-    title('Intensity of phase object at image plane ')
-    figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-    saveas(figureToSave, figFileName)
-    
-    if SLM_type == 1
-        figureToSave = figure;
-        imagesc(I_after_image_plane)                                % show intensity of phase object1
-        colorbar();
-        title('Intensity of phase object after image plane ')
-        figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-        saveas(figureToSave, figFileName)
-
-        figureToSave = figure;
-        imagesc(I_before_image_plane)                                % show intensity of phase object1
-        colorbar();
-        title('Intensity of phase object before image plane ')
-        figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
-        saveas(figureToSave, figFileName)
-    end
-
+saveFigure(I_image_plane,'Intensity of phase object at image plane ','',graphs);
+if SLM_type == 1
+    saveFigure(I_after_image_plane,'Intensity of phase object after image plane ','',graphs);
+    saveFigure(I_before_image_plane,'Intensity of phase object before image plane ','',graphs);
 end
 end

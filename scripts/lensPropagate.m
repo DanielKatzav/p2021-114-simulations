@@ -6,12 +6,5 @@ function [propagated] = lensPropagate(A,f,lambda,X,Y,graphs, nameOfPlane)
 
 Qlens = exp(-1i*(pi/(lambda*f))*(X.^2+Y.^2));   % propagation transfer function of lens with focus f
 propagated = A.*Qlens;                          % propagation through the lens
-if graphs
-   figureToSave = figure;
-   imagesc(propagated.*conj(propagated))
-   colorbar();
-   title("intensity after lens propagation ")
-   figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), nameOfPlane, ".jpg"));
-   saveas(figureToSave, figFileName)
-end
+saveFigure(propagated.*conj(propagated),'Intensity After Lens Propagation ',nameOfPlane,graphs);
 end
