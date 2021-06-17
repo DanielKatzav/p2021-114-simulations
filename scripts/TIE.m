@@ -24,7 +24,7 @@ else
     saveFigure(I_right,'Right Shifted Image at Image Plane','',graphs);
 
     dIdz = (I_left - I_right)./(2*delta_z);                     % approximate the derivative with respect to z axis         
-    I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
+    I_avg = mean(mean(mean(I_left))+mean(mean(I_right)));       % avarage value of intensity at image plane
     I = -k_0*dIdz./I_avg;                              % Laplacian
     I(resolution,resolution) = 0;
     I = centerImage(I,size(dIdz));
@@ -49,10 +49,10 @@ saveFigure(k_recip,'2D Spatial Frequencies','',graphs);        % graph of spatia
 rec_phase = ift2(k_recip .* ft2(I));                 % reconstructing phase
 image_data = real(rec_phase);                       % get real part of reconstructed phase
 
-slice = image_data(400:600, 500);           % intersection slice of the reconstructed data
-
-
-saveFigure(slice,'Slice of Middle of Reconstruction','',graphs);
+% slice = image_data(400:600, 500);           % intersection slice of the reconstructed data
+% 
+% 
+% saveFigure(slice,'Slice of Middle of Reconstruction','',graphs);
 
 figureToSave = figure;
 histogram(image_data(440:560,440:560));     % histogram of the reconstructed data

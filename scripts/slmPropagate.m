@@ -16,4 +16,5 @@ else
 end
 
 saveFigure(propagated.*conj(propagated),'Intensity After SLM Transfer ',nameOfPlane,graphs);
+saveFigure(angle(Qlens.*Qshift),'Mask Applied to Fourier Plane','',graphs);
 end
