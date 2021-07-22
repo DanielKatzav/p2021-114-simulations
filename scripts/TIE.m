@@ -7,15 +7,15 @@ function [rec_phase] = TIE(I_before,I_image,I_after,delta_z,k_0,graphs, compare,
 %respectively.
 %compare is the data of the laplacian received using the del2 function
 %the graphs parameter will determine whether to draw graphs of not. 
-
+resolution = length(I_image);
 if SLM_type == 1
     I_after = I_after(100:900,100:900);
     I_before = I_before(100:900,100:900);
     dIdz = (I_after - I_before)./(2*delta_z);           % approximate the derivative with respect to z axis
     I_avg = mean(mean(I_image(100:900,100:900)));       % avarage value of intensity at image plane
     I = -k_0*dIdz./I_avg;                              % Laplacian
+    I(resolution,resolution) = 0;
 else
-    resolution = length(I_image);
     margin = 80;
     I_left = I_image(479 - margin:541 + margin, 394 - margin:444 + margin);                        % left part of image
     I_right = I_image(479 - margin:541 + margin, 569 - margin:619 + margin);                  %right part of image
