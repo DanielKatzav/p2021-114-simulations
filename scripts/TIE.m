@@ -57,6 +57,8 @@ image_data = real(rec_phase);                       % get real part of reconstru
 figureToSave = figure;
 histogram(image_data(440:560,440:560));     % histogram of the reconstructed data
 title('Histogram of reconstructed Data')
+xlabel('Phase [rad]')
+ylabel('Count')
 figFileName = char(strcat("../Docs/images/", get(get(gca,'title'),'string'), ".jpg"));
 saveas(figureToSave, figFileName)
 
